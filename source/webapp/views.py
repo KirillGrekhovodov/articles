@@ -22,7 +22,6 @@ def article_create_view(request):
         return HttpResponseRedirect("/")
 
 
-def article_view(request):
-    article_id = request.GET.get("id")
-    article = Article.objects.get(id=article_id)
+def article_view(request, *args, pk, **kwargs):
+    article = Article.objects.get(id=pk)
     return render(request, "article.html", {"article": article})
