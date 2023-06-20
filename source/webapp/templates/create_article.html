@@ -9,7 +9,7 @@
 <body>
 <h1>Create Article</h1>
 
-<form action="/articles/add/" method="post">
+<form action="{% url "article_add" %}" method="post">
     {% csrf_token %}
     <label>Title:</label><br/>
     <input type="text" name="title"/><br/>
@@ -20,6 +20,6 @@
     <br/>
     <input type="submit" value="Send"/>
 </form>
-<a href="/">На главную</a>
+<a href="{% url "index" %}">На главную</a>
 </body>
 </html>
