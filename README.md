@@ -29,6 +29,8 @@ pip install -r requirements.txt
 cd source
 ```
 
+### Создайте файл .env по примеру файла .env_example
+
 ### Примените миграции командой
 ```bash
 python manage.py migrate
