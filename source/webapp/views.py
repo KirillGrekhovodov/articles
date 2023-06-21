@@ -9,6 +9,7 @@ def articles_list_view(request):
     context = {"articles": articles}
     return render(request, "index.html", context)
 
+
 def article_create_view(request):
     if request.method == "GET":
         return render(request, "create_article.html")
