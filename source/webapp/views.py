@@ -1,7 +1,7 @@
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.http import HttpResponseRedirect, Http404, HttpResponseNotFound
 
-from webapp.models import Article
+from webapp.models import Article, Section
 
 
 def articles_list_view(request):
@@ -12,12 +12,14 @@ def articles_list_view(request):
 
 def article_create_view(request):
     if request.method == "GET":
-        return render(request, "create_article.html")
+        sections = Section.objects.all()
+        return render(request, "create_article.html", {"sections": sections})
     else:
         article = Article.objects.create(
             title=request.POST.get("title"),
             content=request.POST.get("content"),
-            author=request.POST.get("author")
+            author=request.POST.get("author"),
+            section_id=request.POST.get("section_id")
         )
         return redirect("article_view", pk=article.pk)
 

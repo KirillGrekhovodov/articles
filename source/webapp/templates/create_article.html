@@ -8,10 +8,16 @@
         {% csrf_token %}
         <label>Title:</label><br/>
         <input type="text" name="title"/><br/>
-        <label>Text:</label><br/>
+        <label>Content:</label><br/>
         <textarea name="content"></textarea><br/>
         <label>Author:</label><br/>
         <input type="text" name="author"/><br/>
+        <br/>
+        <select name="section_id" id="">
+            {% for section in sections %}
+                <option value="{{ section.id }}">{{ section.title }}</option>
+            {% endfor %}
+        </select>
         <br/>
         <input type="submit" value="Send"/>
     </form>
