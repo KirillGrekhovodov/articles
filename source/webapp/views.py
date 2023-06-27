@@ -1,5 +1,4 @@
-from django.shortcuts import render, reverse, redirect, get_object_or_404
-from django.http import HttpResponseRedirect, Http404, HttpResponseNotFound
+from django.shortcuts import render, redirect, get_object_or_404
 
 from webapp.models import Article
 
@@ -21,15 +20,28 @@ def article_create_view(request):
         )
         return redirect("article_view", pk=article.pk)
 
-        # url = reverse("article_view", kwargs={"pk": article.pk})
-        # return HttpResponseRedirect(url)
+
+def article_update_view(request, pk):
+    article = get_object_or_404(Article, id=pk)
+    if request.method == "GET":
+        return render(request, "update_article.html", {"article": article})
+    else:
+        article.title = request.POST.get("title")
+        article.content = request.POST.get("content")
+        article.author = request.POST.get("author")
+        article.save()
+        return redirect("article_view", pk=article.pk)
+
+
+def article_delete_view(request, pk):
+    article = get_object_or_404(Article, id=pk)
+    if request.method == "GET":
+        return render(request, "delete_article.html", {"article": article})
+    else:
+        article.delete()
+        return redirect("index")
 
 
 def article_view(request, *args, pk, **kwargs):
     article = get_object_or_404(Article, id=pk)
-    # try:
-    #     article = Article.objects.get(id=pk)
-    # except Article.DoesNotExist:
-    #     return HttpResponseNotFound()
-    #     raise Http404()
     return render(request, "article.html", {"article": article})
