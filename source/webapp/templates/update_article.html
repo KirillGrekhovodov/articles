@@ -4,15 +4,5 @@
 <h1>Update Article</h1>
 
 {% block content %}
-    <form action="{% url "article_update_view" article.pk %}" method="post">
-        {% csrf_token %}
-        <label>Title:</label><br/>
-        <input type="text" name="title" value="{{ article.title }}" /><br/>
-        <label>Text:</label><br/>
-        <textarea name="content">{{ article.content }}</textarea><br/>
-        <label>Author:</label><br/>
-        <input type="text" name="author" value="{{ article.author }}"/><br/>
-        <br/>
-        <input type="submit" value="Update"/>
-    </form>
+    {% include "partial/article_form.html" with button_text="Изменить" %}
 {% endblock %}
