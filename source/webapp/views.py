@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
+from webapp.forms import ArticleForm
 from webapp.models import Article
 
 
@@ -11,26 +12,41 @@ def articles_list_view(request):
 
 def article_create_view(request):
     if request.method == "GET":
-        return render(request, "create_article.html")
+        form = ArticleForm()
+        print(form)
+        return render(request, "create_article.html", {"form": form})
     else:
-        article = Article.objects.create(
-            title=request.POST.get("title"),
-            content=request.POST.get("content"),
-            author=request.POST.get("author")
-        )
-        return redirect("article_view", pk=article.pk)
+        form = ArticleForm(data=request.POST)
+        if form.is_valid():
+
+            article = Article.objects.create(title=form.cleaned_data.get("title"),
+                                             content=form.cleaned_data.get("content"),
+                                             author=form.cleaned_data.get("author"))
+            return redirect("article_view", pk=article.pk)
+        else:
+            print(form.errors)
+            return render(request, "create_article.html", {"form": form})
 
 
 def article_update_view(request, pk):
     article = get_object_or_404(Article, id=pk)
     if request.method == "GET":
-        return render(request, "update_article.html", {"article": article})
+        form = ArticleForm(initial={
+            "title": article.title,
+            "author": article.author,
+            "content": article.content
+        })
+        return render(request, "update_article.html", {"form": form})
     else:
-        article.title = request.POST.get("title")
-        article.content = request.POST.get("content")
-        article.author = request.POST.get("author")
-        article.save()
-        return redirect("article_view", pk=article.pk)
+        form = ArticleForm(data=request.POST)
+        if form.is_valid():
+            article.title = request.POST.get("title")
+            article.content = request.POST.get("content")
+            article.author = request.POST.get("author")
+            article.save()
+            return redirect("article_view", pk=article.pk)
+        else:
+            return render(request, "update_article.html", {"form": form})
 
 
 def article_delete_view(request, pk):
