@@ -11,6 +11,7 @@ class Article(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата изменения")
     status = models.CharField(max_length=20, verbose_name="Статус", choices=status_choices, default=status_choices[0][0])
+    publish_date = models.DateField(null=True, blank=True, verbose_name="Дата публикации")
 
     def __str__(self):
         return f"{self.pk} {self.title}: {self.author}"
