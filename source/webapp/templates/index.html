@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 
-{% block link %}
-    <li class="nav-item">
-        <a class="nav-link" href="{% url "article_add" %}">Создание статьи</a>
-    </li>
-{% endblock %}
 
 {% block content %}
+    {% url "index" as search_action %}
+    {% include "partial/article_form.html" with button_text="Искать" method="get" action=search_action %}
+
+    <h2>создание статьи</h2>
+    {% url "article_add" as action %}
+    {% include "partial/article_form.html" with button_text="Создать" form=article_form action=action %}
     <h1>Articles</h1>
     <br>
-    {% include "partial/articles_list.html" %}
+    {% include "partial/articles_list.html"  %}
 {% endblock %}

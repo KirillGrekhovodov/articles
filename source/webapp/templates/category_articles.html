@@ -1,10 +1,5 @@
 {% extends "base.html" %}
 
-{% block link %}
-    <li class="nav-item">
-        <a class="nav-link" href="{% url "article_add" %}">Создание статьи</a>
-    </li>
-{% endblock %}
 
 {% block content %}
     <h1>Category Title: {{ category_title }}</h1>

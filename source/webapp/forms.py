@@ -55,3 +55,7 @@ class ArticleForm(forms.ModelForm):
         fields = ["title", "author", "content", "status", "publish_date", "category"]
         widgets = {"content": widgets.Textarea(attrs={"cols": 30, "rows": 5, "class": "test"})}
         error_messages = {"title": {"required": "Поле обязательное"}}
+
+
+class SearchForm(forms.Form):
+    search = forms.CharField(max_length=50, label="Поиск", required=False)
