@@ -1,23 +1,57 @@
+from django.db.models import Q
+from django.utils.html import urlencode
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, FormView
+from django.views.generic import TemplateView, FormView, ListView, DetailView
 
-from webapp.forms import ArticleForm
+from webapp.forms import ArticleForm, SearchForm
 from webapp.models import Article
 
 
-class ArticleListView(View):
-    def get(self, request, *args, **kwargs):
-        articles = Article.objects.order_by("-updated_at")
-        context = {"articles": articles}
-        return render(request, "index.html", context)
+class ArticleListView(ListView):
+    model = Article
+    template_name = "articles/index.html"
+    context_object_name = "articles"
+    ordering = ("-updated_at",)
+    paginate_by = 3
+
+    # paginate_orphans = 1
+
+    def dispatch(self, request, *args, **kwargs):
+        self.form = self.get_search_form()
+        self.search_value = self.get_search_value()
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=None, **kwargs)
+        context["form"] = self.form
+        if self.search_value:
+            context["query"] = urlencode({'search': self.search_value})
+            context["search_value"] = self.search_value
+        return context
+
+    def get_search_form(self):
+        return SearchForm(self.request.GET)
+
+    def get_search_value(self):
+        if self.form.is_valid():
+            return self.form.cleaned_data['search']
+        return None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        print(self.search_value)
+        if self.search_value:
+            queryset = queryset.filter(Q(title__icontains=self.search_value) |
+                                       Q(author__icontains=self.search_value))
+        return queryset
 
 
 class ArticleCreateView(FormView):
     # success_url = reverse_lazy("index")
     form_class = ArticleForm
-    template_name = "create_article.html"
+    template_name = "articles/create_article.html"
 
     # def get_success_url(self):
     #     return reverse("article_view", kwargs={"pk": self.object.pk})
@@ -37,7 +71,7 @@ class ArticleCreateView(FormView):
 
 class ArticleUpdateView(FormView):
     form_class = ArticleForm
-    template_name = "update_article.html"
+    template_name = "articles/update_article.html"
 
     def dispatch(self, request, *args, **kwargs):
         self.article = self.get_object(kwargs.get("pk"))
@@ -84,7 +118,7 @@ def article_update_view(request, pk):
             "content": article.content,
             "tags": article.tags.all()
         })
-        return render(request, "update_article.html", {"form": form})
+        return render(request, "articles/update_article.html", {"form": form})
     else:
         form = ArticleForm(data=request.POST)
         if form.is_valid():
@@ -96,25 +130,23 @@ def article_update_view(request, pk):
             article.tags.set(tags)
             return redirect("article_view", pk=article.pk)
         else:
-            return render(request, "update_article.html", {"form": form})
+            return render(request, "articles/update_article.html", {"form": form})
 
 
 def article_delete_view(request, pk):
     article = get_object_or_404(Article, id=pk)
     if request.method == "GET":
-        return render(request, "delete_article.html", {"article": article})
+        return render(request, "articles/delete_article.html", {"article": article})
     else:
         article.delete()
         return redirect("index")
 
 
-class ArticleDetailView(TemplateView):
-    # template_name = "article.html"
+class ArticleDetailView(DetailView):
+    queryset = Article.objects.all()
+    template_name = "articles/article.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["article"] = get_object_or_404(Article, id=kwargs['pk'])
+        context['comments'] = self.object.comments.order_by("-updated_at")
         return context
-
-    def get_template_names(self):
-        return "article.html"

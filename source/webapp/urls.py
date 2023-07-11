@@ -1,7 +1,7 @@
 from django.urls import path
 from django.views.generic import RedirectView
 
-from webapp.views import \
+from webapp.views.articles_view import \
     article_update_view, article_delete_view, ArticleListView, ArticleCreateView, ArticleDetailView
 
 urlpatterns = [

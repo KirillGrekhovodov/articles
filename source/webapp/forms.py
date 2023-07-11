@@ -28,14 +28,6 @@ class ArticleForm(forms.ModelForm):
             "tags": widgets.CheckboxSelectMultiple
         }
 
-    #
-    # title = forms.CharField(max_length=50, required=True, label="Название")
-    # author = forms.CharField(max_length=50, required=True, label="Автор")
-    # content = forms.CharField(max_length=2000, required=True, label="Контент",
-    #                           widget=widgets.Textarea(
-    #                               attrs={"cols": 30, "rows": 5, "class": "test"}))
-    # tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), label="Теги")
-
     def clean(self):
         cleaned_data = super().clean()
 
@@ -43,3 +35,7 @@ class ArticleForm(forms.ModelForm):
                 cleaned_data['content'] == cleaned_data['title']:
             raise ValidationError("Text of the article should not duplicate it's title!")
         return cleaned_data
+
+
+class SearchForm(forms.Form):
+    search = forms.CharField(max_length=30, required=False, label="Найти")

@@ -18,7 +18,7 @@
     </div>
 
     <h2>Коментарии</h2>
-    {% for comment in article.comments.all %}
+    {% for comment in comments %}
         <div>
             <h6>{{ comment.author }}</h6>
             <p>{{ comment.text }}</p>
