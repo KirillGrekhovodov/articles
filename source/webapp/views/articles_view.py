@@ -10,11 +10,11 @@ from webapp.models import Article
 
 
 class ArticleListView(ListView):
-    model = Article
+    queryset = Article.objects.all().prefetch_related("tags")
     template_name = "articles/index.html"
     context_object_name = "articles"
     ordering = ("-updated_at",)
-    paginate_by = 3
+    paginate_by = 10
 
     # paginate_orphans = 1
 
@@ -142,8 +142,16 @@ def article_delete_view(request, pk):
         return redirect("index")
 
 
+def articles_delete_view(request):
+    articles_ids = request.POST.getlist("articles")
+    if articles_ids:
+        articles = Article.objects.filter(id__in=articles_ids)
+        articles.delete()
+    return redirect("index")
+
+
 class ArticleDetailView(DetailView):
-    queryset = Article.objects.all()
+    queryset = Article.objects.all().prefetch_related("tags")
     template_name = "articles/article.html"
 
     def get_context_data(self, **kwargs):
