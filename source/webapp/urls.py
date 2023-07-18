@@ -6,8 +6,10 @@ from webapp.views.articles_view import \
     ArticleDeleteView
 from webapp.views.comments_view import CommentCreateView, CommentUpdateView, CommentDeleteView
 
+app_name = "webapp"
+
 urlpatterns = [
-    path('', RedirectView.as_view(pattern_name="index")),
+    path('', RedirectView.as_view(pattern_name="webapp:index")),
     path('articles/', ArticleListView.as_view(), name="index"),
     path('articles/add/', ArticleCreateView.as_view(), name="article_add"),
     path('article/<int:pk>/', ArticleDetailView.as_view(), name="article_view"),

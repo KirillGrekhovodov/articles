@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.utils.html import urlencode
 from django.shortcuts import render, redirect, get_object_or_404
@@ -19,6 +20,8 @@ class ArticleListView(ListView):
     # paginate_orphans = 1
 
     def dispatch(self, request, *args, **kwargs):
+        print(request.path)
+
         self.form = self.get_search_form()
         self.search_value = self.get_search_value()
         return super().dispatch(request, *args, **kwargs)
@@ -48,12 +51,17 @@ class ArticleListView(ListView):
         return queryset
 
 
-class ArticleCreateView(CreateView):
+class ArticleCreateView(LoginRequiredMixin, CreateView):
     form_class = ArticleForm
     template_name = "articles/create_article.html"
 
+    # def dispatch(self, request, *args, **kwargs):
+    #     if request.user.is_authenticated:
+    #         return super().dispatch(request, *args, **kwargs)
+    #     return redirect("accounts:login")
+
     # def get_success_url(self):
-    #     return reverse("article_view", kwargs={"pk": self.object.pk})
+    #     return reverse("webapp:article_view", kwargs={"pk": self.object.pk})
 
 
 class ArticleUpdateView(UpdateView):
@@ -70,7 +78,7 @@ class ArticleUpdateView(UpdateView):
 class ArticleDeleteView(DeleteView):
     model = Article
     template_name = "articles/delete_article.html"
-    success_url = reverse_lazy("index")
+    success_url = reverse_lazy("webapp:index")
 
     # def get(self, request, *args, **kwargs):
     #     return self.delete(request, *args, **kwargs)

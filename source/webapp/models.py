@@ -20,7 +20,7 @@ class Article(AbstractModel):
         return f"{self.pk} {self.title}: {self.author}"
 
     def get_absolute_url(self):
-        return reverse("article_view", kwargs={"pk": self.pk}) #article/5/
+        return reverse("webapp:article_view", kwargs={"pk": self.pk}) #article/5/
 
     class Meta:
         db_table = "articles"

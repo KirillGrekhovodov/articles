@@ -21,10 +21,10 @@ class CommentCreateView(CreateView):
         comment.article = article
         comment.save()
         # form.save_m2m()
-        return redirect("article_view", pk=article.pk)
+        return redirect("webapp:article_view", pk=article.pk)
 
     # def get_success_url(self):
-    #     return reverse("article_view", kwargs={"pk": self.object.article.pk})
+    #     return reverse("webapp:article_view", kwargs={"pk": self.object.article.pk})
 
 
 class CommentUpdateView(UpdateView):
@@ -38,14 +38,14 @@ class CommentUpdateView(UpdateView):
         return context
 
     def get_success_url(self):
-        return reverse("article_view", kwargs={"pk": self.object.article.pk})
+        return reverse("webapp:article_view", kwargs={"pk": self.object.article.pk})
 
 
 class CommentDeleteView(DeleteView):
     model = Comment
 
     def get_success_url(self):
-        return reverse("article_view", kwargs={"pk": self.object.article.pk})
+        return reverse("webapp:article_view", kwargs={"pk": self.object.article.pk})
 
     def get(self, request, *args, **kwargs):
         return self.delete(request, *args, **kwargs)
