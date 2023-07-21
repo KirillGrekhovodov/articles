@@ -55,6 +55,10 @@ class ArticleCreateView(LoginRequiredMixin, CreateView):
     form_class = ArticleForm
     template_name = "articles/create_article.html"
 
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
     # def dispatch(self, request, *args, **kwargs):
     #     if request.user.is_authenticated:
     #         return super().dispatch(request, *args, **kwargs)

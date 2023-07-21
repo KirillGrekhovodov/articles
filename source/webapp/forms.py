@@ -22,7 +22,7 @@ class ArticleForm(forms.ModelForm):
 
     class Meta:
         model = Article
-        fields = ["title", "author", "content", "tags"]
+        fields = ["title", "content", "tags"]
         widgets = {
             "content": widgets.Textarea(attrs={"cols": 30, "rows": 5, "class": "test"}),
             "tags": widgets.CheckboxSelectMultiple
@@ -44,4 +44,4 @@ class SearchForm(forms.Form):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ("text", "author")
+        fields = ("text",)

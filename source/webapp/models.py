@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
 
@@ -12,9 +13,11 @@ class AbstractModel(models.Model):
 
 class Article(AbstractModel):
     title = models.CharField(max_length=50, null=False, blank=False, verbose_name="Название")
-    author = models.CharField(max_length=50, null=False, blank=False, verbose_name="Автор", default="Неизвестный")
+
     content = models.TextField(max_length=2000, verbose_name="Контент")
     tags = models.ManyToManyField('webapp.Tag', related_name='articles', blank=True)
+    author = models.ForeignKey(get_user_model(), on_delete=models.SET_DEFAULT,
+                               default=1, related_name="articles", verbose_name="Автор")
 
     def __str__(self):
         return f"{self.pk} {self.title}: {self.author}"
@@ -32,7 +35,9 @@ class Comment(AbstractModel):
     article = models.ForeignKey('webapp.Article', related_name='comments', on_delete=models.CASCADE,
                                 verbose_name='Статья')
     text = models.TextField(max_length=400, verbose_name='Комментарий')
-    author = models.CharField(max_length=40, null=True, blank=True, default='Аноним', verbose_name='Автор')
+    author = models.ForeignKey('auth.User', on_delete=models.SET_DEFAULT,
+                               default=1, related_name="comments", verbose_name="Автор")
+
 
     def __str__(self):
         return self.text[:20]

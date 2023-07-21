@@ -19,6 +19,7 @@ class CommentCreateView(CreateView):
         article = get_object_or_404(Article, pk=self.kwargs.get("pk"))
         comment = form.save(commit=False)
         comment.article = article
+        comment.author = self.request.user
         comment.save()
         # form.save_m2m()
         return redirect("webapp:article_view", pk=article.pk)
