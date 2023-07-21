@@ -23,12 +23,15 @@ class Article(AbstractModel):
         return f"{self.pk} {self.title}: {self.author}"
 
     def get_absolute_url(self):
-        return reverse("webapp:article_view", kwargs={"pk": self.pk}) #article/5/
+        return reverse("webapp:article_view", kwargs={"pk": self.pk})  # article/5/
 
     class Meta:
         db_table = "articles"
         verbose_name = "Статья"
         verbose_name_plural = "Статьи"
+        permissions = [
+            ('write_rate', 'Написать рецензию')
+        ]
 
 
 class Comment(AbstractModel):
@@ -37,7 +40,6 @@ class Comment(AbstractModel):
     text = models.TextField(max_length=400, verbose_name='Комментарий')
     author = models.ForeignKey('auth.User', on_delete=models.SET_DEFAULT,
                                default=1, related_name="comments", verbose_name="Автор")
-
 
     def __str__(self):
         return self.text[:20]
