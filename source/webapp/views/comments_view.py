@@ -10,6 +10,10 @@ class CommentCreateView(CreateView):
     form_class = CommentForm
     template_name = "comments/comment_create.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        get_object_or_404(Article, pk=self.kwargs.get("pk"), is_deleted=False)
+        return super().dispatch(request, *args, **kwargs)
+
     # def form_valid(self, form):
     #     article = get_object_or_404(Article, pk=self.kwargs.get("pk"))
     #     form.instance.article = article
@@ -30,6 +34,7 @@ class CommentCreateView(CreateView):
 
 class CommentUpdateView(UpdateView):
     model = Comment
+    queryset = Comment.objects.filter(article__is_deleted=False)
     form_class = CommentForm
     template_name = "comments/update_comment.html"
 
@@ -44,6 +49,7 @@ class CommentUpdateView(UpdateView):
 
 class CommentDeleteView(DeleteView):
     model = Comment
+    queryset = Comment.objects.filter(article__is_deleted=False)
 
     def get_success_url(self):
         return reverse("webapp:article_view", kwargs={"pk": self.object.article.pk})

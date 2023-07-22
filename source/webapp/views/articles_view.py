@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.utils.html import urlencode
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -45,7 +46,7 @@ class ArticleListView(ListView):
         return None
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().filter(is_deleted=False)
         print(self.search_value)
         if self.search_value:
             queryset = queryset.filter(Q(title__icontains=self.search_value) |
@@ -56,7 +57,6 @@ class ArticleListView(ListView):
 class ArticleCreateView(LoginRequiredMixin, CreateView):
     form_class = ArticleForm
     template_name = "articles/create_article.html"
-
 
     # def dispatch(self, request, *args, **kwargs):
     #     result = super().dispatch(request, *args, **kwargs)
@@ -79,6 +79,7 @@ class ArticleCreateView(LoginRequiredMixin, CreateView):
 
 class ArticleUpdateView(PermissionRequiredMixin, UpdateView):
     model = Article
+    queryset = Article.objects.filter(is_deleted=False)
     form_class = ArticleForm
     template_name = "articles/update_article.html"
     permission_required = "webapp.change_article"
@@ -95,20 +96,29 @@ class ArticleUpdateView(PermissionRequiredMixin, UpdateView):
 
 class ArticleDeleteView(PermissionRequiredMixin, DeleteView):
     model = Article
+    queryset = Article.objects.filter(is_deleted=False)
     template_name = "articles/delete_article.html"
     success_url = reverse_lazy("webapp:index")
-
 
     def has_permission(self):
         return self.request.user.has_perm("webapp.delete_article") or \
             self.get_object().author == self.request.user
 
-    # def get(self, request, *args, **kwargs):
-    #     return self.delete(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
+        return self.delete(request, *args, **kwargs)
 
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.is_deleted = True
+        self.object.save()
+        return HttpResponseRedirect(success_url)
+
+        # def get(self, request, *args, **kwargs):
+        #     return self.delete(request, *args, **kwargs)
 
 class ArticleDetailView(LoginRequiredMixin, DetailView):
-    queryset = Article.objects.all()
+    queryset = Article.objects.filter(is_deleted=False)
     template_name = "articles/article.html"
 
     def get_context_data(self, **kwargs):

@@ -18,6 +18,7 @@ class Article(AbstractModel):
     tags = models.ManyToManyField('webapp.Tag', related_name='articles', blank=True)
     author = models.ForeignKey(get_user_model(), on_delete=models.SET_DEFAULT,
                                default=1, related_name="articles", verbose_name="Автор")
+    is_deleted = models.BooleanField(default=False, blank=True, verbose_name="удалено или нет")
 
     def __str__(self):
         return f"{self.pk} {self.title}: {self.author}"
