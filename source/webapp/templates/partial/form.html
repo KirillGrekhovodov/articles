@@ -1,46 +1,25 @@
-<form action="" method="post">
+{% if not fields_only %}
+    <form action="" method="post">
+
     {% csrf_token %}
-    {#    <label>Title:</label><br/>#}
-    {#    {% if errors.title %}#}
-    {#        <input type="text" name="title" class="border border-danger border-4" value="{{ article.title }}"/><br/>#}
-    {#        <p class="text-danger">{{ errors.title  }}</p>#}
-    {#    {% else %}#}
-    {#        <input type="text" name="title" value="{{ article.title }}"/><br/>#}
-    {#    {% endif %}#}
-    {##}
-    {#    <label>Text:</label><br/>#}
-    {#    {% if errors.content %}#}
-    {#        <textarea name="content" class="border border-danger border-4" >{{ article.content }}</textarea><br/>#}
-    {#        <p class="text-danger">{{ errors.content }}</p>#}
-    {#    {% else %}#}
-    {#        <textarea name="content">{{ article.content }}</textarea><br/>#}
-    {#    {% endif %}#}
-    {##}
-    {#    <label>Author:</label><br/>#}
-    {#    {% if errors.author %}#}
-    {#        <input type="text" name="author" class="border border-danger border-4" value="{{ article.author }}"/><br/>#}
-    {#        <p class="text-danger">{{ errors.author }}</p>#}
-    {#    {% else %}#}
-    {#        <input type="text" name="author" value="{{ article.author }}"/><br/>#}
-    {#    {% endif %}#}
+{% endif %}
+
+{% for error in form.non_field_errors %}
+    <p class="form-error">{{ error }}</p>
+{% endfor %}
 
 
-
-
-    {% for error in form.non_field_errors %}
+{% for field in form %}
+    <p><label for="{{ field.id_for_label }}">{{ field.label }}</label></p>
+    {% for error in field.errors %}
         <p class="form-error">{{ error }}</p>
     {% endfor %}
+    <p>{{ field }}</p>
+{% endfor %}
 
-
-
-    {% for field in form %}
-        <p><label for="{{ field.id_for_label }}">{{ field.label }}</label></p>
-        {% for error in field.errors %}
-            <p class="form-error">{{ error }}</p>
-        {% endfor %}
-        <p>{{ field }}</p>
-    {% endfor %}
-
-    <br/>
+<br/>
+{% if not fields_only %}
     <input type="submit" value="{{ button_text }}"/>
-</form>
+
+    </form>
+{% endif %}
