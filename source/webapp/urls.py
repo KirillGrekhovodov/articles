@@ -5,6 +5,7 @@ from webapp.views.articles_view import \
     ArticleListView, ArticleCreateView, ArticleDetailView, ArticleUpdateView, \
     ArticleDeleteView
 from webapp.views.comments_view import CommentCreateView, CommentUpdateView, CommentDeleteView
+from webapp.views.projects_view import ProjectListView, ProjectCreateView, ProjectUpdateView, ChangeUsersInProjectView
 
 app_name = "webapp"
 
@@ -18,4 +19,10 @@ urlpatterns = [
     path('article/<int:pk>/comment/add/', CommentCreateView.as_view(), name="comment_add"),
     path('comment/<int:pk>/update/', CommentUpdateView.as_view(), name="comment_update"),
     path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name="comment_delete"),
+
+    path('projects/', ProjectListView.as_view(), name="index_project"),
+    path('projects/add/', ProjectCreateView.as_view(), name="project_add"),
+    path('projects/<int:pk>/update/', ProjectUpdateView.as_view(), name="project_update_view"),
+
+    path('projects/<int:pk>/change-users/', ChangeUsersInProjectView.as_view(), name="project_users_change"),
 ]

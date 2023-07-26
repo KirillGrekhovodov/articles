@@ -1,8 +1,10 @@
 from django import forms
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.db.migrations import serializer
 from django.forms import widgets
 
-from webapp.models import Tag, Article, Comment
+from webapp.models import Tag, Article, Comment, Project
 
 
 def at_least_10(value):
@@ -45,3 +47,22 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ("text",)
+
+
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ("title", "content")
+
+
+class ProjectUsersForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        pk = kwargs.pop("pk")
+        super().__init__(*args, **kwargs)
+        self.fields['users'].queryset = get_user_model().objects.exclude(pk=pk)
+
+    class Meta:
+        model = Project
+        fields = ("users",)
+        widgets = {"users": widgets.CheckboxSelectMultiple}

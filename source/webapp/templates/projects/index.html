@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    <div class="row">
+        {% for project in projects %}
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card mt-3" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ project.title }}</h5>
+                        <p class="card-text">{{ project.content }}</p>
+                        <p>{% for u in project.users.all %}
+                            {{ u.username }}
+                        {% endfor %}</p>
+                        <div class="btn-group" role="group">
+
+                            {#                            <a href="{{ article.get_absolute_url }}" class="btn btn-primary"><i#}
+                            {#                                    class="bi bi-blockquote-right"></i></a>#}
+
+                            {% if perms.webapp.change_project and request.user in project.users.all %}
+                                <a href="{% url "webapp:project_update_view" project.pk %}"
+                                   class="btn btn-primary"><i class="bi bi-pencil-square"></i></a>
+                            {% endif %}
+                            {% if perms.webapp.add_users_in_project and request.user in project.users.all %}
+                                <a href="{% url "webapp:project_users_change" project.pk %}" class="btn btn-primary">
+                                    Пользователи проекта
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% empty %}
+            <h2>статьи не найдены</h2>
+        {% endfor %}
+    </div>
+    {% if is_paginated %}
+        {% include 'partial/pagination.html' %}
+    {% endif %}
+
+{% endblock %}

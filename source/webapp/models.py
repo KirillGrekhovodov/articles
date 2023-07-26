@@ -55,3 +55,20 @@ class Tag(AbstractModel):
         db_table = "tags"
         verbose_name = "Тег"
         verbose_name_plural = "Теги"
+
+
+class Project(AbstractModel):
+    title = models.CharField(max_length=50, null=False, blank=False, verbose_name="Заголовок")
+    content = models.TextField(max_length=3000, verbose_name="Контент")
+    users = models.ManyToManyField(get_user_model(), related_name="projects", blank=True)
+
+    def __str__(self):
+        return f"{self.id}. {self.title}"
+
+    class Meta:
+        db_table = "projects"
+        verbose_name = "Проект"
+        verbose_name_plural = "Проекты"
+        permissions = [
+            ('add_users_in_project', 'Добавить юзеров в проект')
+        ]
