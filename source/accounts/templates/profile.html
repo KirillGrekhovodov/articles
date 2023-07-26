@@ -5,7 +5,7 @@
             <a class="nav-link" href="{% url 'accounts:change' user_obj.pk %}">Редактировать</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">Смена пароля</a>
+            <a class="nav-link" href="{% url 'accounts:password_change' %}">Смена пароля</a>
         </li>
     {% endif %}
 {% endblock %}
@@ -13,13 +13,15 @@
 
 {% block content %}
     <div class="card">
-        <img height="100" width="200" src="{{ user_obj.profile.avatar.url }}" class="card-img-top" alt="...">
+        {% if user_obj.profile.avatar %}
+            <img height="100" width="200" src="{{ user_obj.profile.avatar.url }}" class="card-img-top" alt="...">
+        {% endif %}
         <div class="card-body">
             <h5 class="card-title">{{ user_obj.username }}</h5>
             <p class="card-text">{{ user_obj.profile.birth_date }}</p>
             <p class="card-text">{{ user_obj.first_name }}</p>
-            <p class="card-text">{{ user_obj.email}}</p>
-{#            <a href="#" class="btn btn-primary">Go somewhere</a>#}
+            <p class="card-text">{{ user_obj.email }}</p>
+            {#            <a href="#" class="btn btn-primary">Go somewhere</a>#}
         </div>
     </div>
 

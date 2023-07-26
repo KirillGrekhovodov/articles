@@ -1,3 +1,4 @@
+{% extends "base.html" %}
 {% block content %}
     <h1>Поменять личные данные</h1>
     <form action="{% url 'accounts:change' user_obj.pk %}" method="post" enctype="multipart/form-data">

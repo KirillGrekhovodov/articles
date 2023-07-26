@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import User
+from django.contrib.auth.views import PasswordChangeView
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -38,7 +39,7 @@ class RegisterView(CreateView):
 
     def form_valid(self, form):
         user = form.save()
-        # Profile.objects.create(user=user)
+        Profile.objects.create(user=user)
         login(self.request, user)
         return redirect(self.get_success_url())
 
@@ -109,6 +110,14 @@ class UserChangeView(PermissionRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('accounts:profile', kwargs={'pk': self.object.pk})
+
+
+class UserPasswordChangeView(PasswordChangeView):
+
+    template_name = 'user_password_change.html'
+
+    def get_success_url(self):
+        return reverse('accounts:profile', kwargs={'pk': self.request.user.pk})
 
 
 
