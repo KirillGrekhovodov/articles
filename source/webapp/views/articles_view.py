@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
+from django.http import JsonResponse
 from django.utils.html import urlencode
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -20,6 +21,10 @@ class ArticleListView(ListView):
     paginate_by = 3
 
     # paginate_orphans = 1
+
+    def get(self, request, *args, **kwargs):
+
+        return JsonResponse({"test": 1, "test2": [1, 3, 4]})
 
     def dispatch(self, request, *args, **kwargs):
         print(request.path)
@@ -56,7 +61,6 @@ class ArticleListView(ListView):
 class ArticleCreateView(LoginRequiredMixin, CreateView):
     form_class = ArticleForm
     template_name = "articles/create_article.html"
-
 
     # def dispatch(self, request, *args, **kwargs):
     #     result = super().dispatch(request, *args, **kwargs)
@@ -97,7 +101,6 @@ class ArticleDeleteView(PermissionRequiredMixin, DeleteView):
     model = Article
     template_name = "articles/delete_article.html"
     success_url = reverse_lazy("webapp:index")
-
 
     def has_permission(self):
         return self.request.user.has_perm("webapp.delete_article") or \
