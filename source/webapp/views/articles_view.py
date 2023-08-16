@@ -22,10 +22,6 @@ class ArticleListView(ListView):
 
     # paginate_orphans = 1
 
-    def get(self, request, *args, **kwargs):
-
-        return JsonResponse({"test": 1, "test2": [1, 3, 4]})
-
     def dispatch(self, request, *args, **kwargs):
         print(request.path)
 
@@ -118,3 +114,16 @@ class ArticleDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['comments'] = self.object.comments.order_by("-updated_at")
         return context
+
+
+class LikeArticleView(View):
+
+    def post(self, request, pk, *args, **kwargs):
+        article = get_object_or_404(Article, pk=pk)
+        article.likes.add(request.user)
+        return JsonResponse({"count": article.likes.count()})
+
+    def delete(self, request, pk, *args, **kwargs):
+        article = get_object_or_404(Article, pk=pk)
+        article.likes.remove(request.user)
+        return JsonResponse({"count": article.likes.count()})

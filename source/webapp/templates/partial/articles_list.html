@@ -19,7 +19,16 @@
                             <a href="{% url "webapp:article_delete_view" article.pk %}" class="btn btn-primary"><i
                                     class="bi bi-trash3"></i></a>
                         {% endif %}
+
                     </div>
+                    <a class="likes" href="{% url "webapp:article_like" article.pk %}" data-article-id="{{ article.pk }}">
+                        {% if request.user in article.likes.all %}
+                            ДизЛайк
+                        {% else %}
+                            Лайк
+                        {% endif %}
+                    </a>
+                    <p>Количество лайков <span id="article_likes_count_{{ article.id }}">{{ article.likes.count }}</span></p>
                 </div>
             </div>
         </div>

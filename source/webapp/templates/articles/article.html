@@ -19,6 +19,14 @@
         <p class="card-text">{{ article.content }}</p>
         <p class="card-text">дата изменения: {{ article.updated_at }}</p>
     </div>
+    <a class="likes" href="{% url "webapp:article_like" article.pk %}" data-article-id="{{ article.pk }}">
+        {% if request.user in article.likes.all %}
+            ДизЛайк
+        {% else %}
+            Лайк
+        {% endif %}
+    </a>
+    <p>Количество лайков <span id="article_likes_count_{{ article.id }}">{{ article.likes.count }}</span></p>
 
     <h2>Коментарии</h2>
     {% for comment in comments %}
