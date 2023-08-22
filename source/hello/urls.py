@@ -24,6 +24,7 @@ from hello import settings
 api_urls = [
     path('v1/', include('api_v1.urls')),
     path('v2/', include('api_v2.urls')),
+    path('v3/', include('api_v3.urls')),
 ]
 
 
