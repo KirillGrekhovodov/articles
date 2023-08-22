@@ -58,9 +58,12 @@ class ArticleModelSerializer(serializers.ModelSerializer):
         print(data)
         return data
 
+    def save(self):
+        super().save()
+
     class Meta:
         model = Article
-        fields = ["id", "tags", "comments", "author", "created_at", "updated_at", "title", "content"]
+        fields = ["id", "tags", "author", "created_at", "updated_at", "title", "content"]
         read_only_fields = ("id", "author", "created_at", "updated_at")
 
 
