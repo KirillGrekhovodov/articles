@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
@@ -20,12 +22,18 @@ class ArticleListView(ListView):
     paginate_by = 3
 
     # paginate_orphans = 1
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+        if request.user.is_authenticated:
+            response.set_cookie('token', request.user.auth_token.key)
+        return response
 
     def dispatch(self, request, *args, **kwargs):
         print(request.path)
 
         self.form = self.get_search_form()
         self.search_value = self.get_search_value()
+
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -56,7 +64,6 @@ class ArticleListView(ListView):
 class ArticleCreateView(LoginRequiredMixin, CreateView):
     form_class = ArticleForm
     template_name = "articles/create_article.html"
-
 
     # def dispatch(self, request, *args, **kwargs):
     #     result = super().dispatch(request, *args, **kwargs)
@@ -97,7 +104,6 @@ class ArticleDeleteView(PermissionRequiredMixin, DeleteView):
     model = Article
     template_name = "articles/delete_article.html"
     success_url = reverse_lazy("webapp:index")
-
 
     def has_permission(self):
         return self.request.user.has_perm("webapp.delete_article") or \

@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from api_v2.serializers import ArticleModelSerializer
+from api_v3.permissions import IsAuthenticatedOrAuthor
 from webapp.models import Article
 
 
@@ -15,29 +16,34 @@ from webapp.models import Article
 class ArticleViewSet(ModelViewSet):
     queryset = Article.objects.all()
     serializer_class = ArticleModelSerializer
+    # permission_classes = [IsAuthenticatedOrAuthor]
 
-    # permission_classes = [DjangoModelPermissions]
-    #
-    # throttle_classes = []
-    def perform_create(self, serializer):
-        author = self.request.user
-        print(author)
-        serializer.save(author=author)
+
+    def dispatch(self, request, *args, **kwargs):
+        print(request.body)
+        return super().dispatch(request, *args, **kwargs)
+
+
+
+    # def perform_create(self, serializer):
+    #     author = self.request.user
+    #     print(author)
+    #     serializer.save(author=author)
 
     def get_permissions(self):
-        super().get_permissions()
         if self.request.method in SAFE_METHODS:
             return []
-        return [IsAuthenticated()]
+        return [IsAuthenticatedOrAuthor()]
 
-    def list(self, request, *args, **kwargs):
-        return Response({"test": "test"})
+    # def list(self, request, *args, **kwargs):
+    #     return Response({"test": "test"})
 
     def retrieve(self, request, *args, **kwargs):
         print(self.get_object())
         return Response(ArticleModelSerializer(self.get_object()).data)
 
     def get_serializer_class(self):
+        super().get_serializer_class()
         print(self.action, "!!!!")
         if self.action in ("retrieve", "list"):
             # if self.request.method == "GET":

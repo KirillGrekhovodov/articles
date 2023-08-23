@@ -33,39 +33,68 @@ class ArticleSerializer(serializers.Serializer):
     # test = serializers.CharField(max_length=15, write_only=True)
 
 
-
 class AuthorModelSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = get_user_model()
         fields = ["id", "username", "email"]
 
-class TagModelSerializer(serializers.ModelSerializer):
 
+class TagModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ["id", "name"]
 
 
 class ArticleModelSerializer(serializers.ModelSerializer):
-    author = AuthorModelSerializer(required=False)
+    author = AuthorModelSerializer(read_only=True)
+    tags = TagModelSerializer(many=True, read_only=True)
+    # tags_ids = serializers.ListField(write_only=True, source="tags")
 
-    def to_representation(self, instance):
-        print(instance)
-        data = super().to_representation(instance)
-        print(data)
-        data['tags'] = TagModelSerializer(instance.tags.all(), many=True).data
-        print(data)
-        return data
+    tags_list = serializers.ListField(write_only=True, source="tags", required=False)
 
-    def save(self):
-        super().save()
+    # def to_representation(self, instance):
+    #     data = super().to_representation(instance)
+    #     data['tags'] = TagModelSerializer(instance.tags.all(), many=True).data
+    #     return data
+
+    def create(self, validated_data):
+        print(validated_data)
+        tags = validated_data.pop("tags", [])
+        article = super().create(validated_data)
+        if tags:
+            for tag_name in tags:
+                tag, _ = Tag.objects.get_or_create(name=tag_name)
+                article.tags.add(tag)
+        return article
+
+    def update(self, instance, validated_data):
+        print(validated_data)
+        tags = validated_data.pop("tags", [])
+        article = super().update(instance, validated_data)
+        if tags:
+            tags_list = []
+            for tag_name in tags:
+                tag, _ = Tag.objects.get_or_create(name=tag_name)
+                tags_list.append(tag)
+            article.tags.set(tags_list)
+        return article
+
+    def save(self, **kwargs):
+        request = self.context['request']
+        print(request.user)
+        kwargs['author'] = request.user
+        super().save(**kwargs)
+
+    def validate(self, attrs):
+
+        result = super().validate(attrs)
+        # print(result.errors)
+        return result
 
     class Meta:
         model = Article
-        fields = ["id", "tags", "author", "created_at", "updated_at", "title", "content"]
-        read_only_fields = ("id", "author", "created_at", "updated_at")
-
+        fields = ["id", "tags", "tags_list", "comments", "author", "created_at", "updated_at", "title", "content"]
+        read_only_fields = ("id", "author", "created_at", "updated_at", "comments")
 
     def validate_title(self, value):
         if len(value) < 5:
