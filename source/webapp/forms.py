@@ -1,17 +1,18 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import widgets
+from django.utils.translation import gettext_lazy as _
 
 from webapp.models import Tag, Article, Comment
 
 
 def at_least_10(value):
     if len(value) < 10:
-        raise ValidationError('This value is too short!')
+        raise ValidationError(_('This value is too short!'))
 
 
 class ArticleForm(forms.ModelForm):
-    title = forms.CharField(max_length=50, required=True, label="Название", validators=[at_least_10])
+    title = forms.CharField(max_length=50, required=True, label=_("Название"), validators=[at_least_10])
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -33,12 +34,12 @@ class ArticleForm(forms.ModelForm):
 
         if cleaned_data.get('content') and cleaned_data.get('title') and \
                 cleaned_data['content'] == cleaned_data['title']:
-            raise ValidationError("Text of the article should not duplicate it's title!")
+            raise ValidationError(_("Text of the article should not duplicate it's title!"))
         return cleaned_data
 
 
 class SearchForm(forms.Form):
-    search = forms.CharField(max_length=30, required=False, label="Найти")
+    search = forms.CharField(max_length=30, required=False, label=_("Найти"))
 
 
 class CommentForm(forms.ModelForm):

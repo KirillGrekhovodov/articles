@@ -1,0 +1,85 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-11-02 17:56+0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: webapp/forms.py:11
+msgid "This value is too short!"
+msgstr "This value is too short!"
+
+#: webapp/forms.py:15 webapp/models.py:16
+msgid "Название"
+msgstr "Title"
+
+#: webapp/forms.py:37
+msgid "Text of the article should not duplicate it's title!"
+msgstr "Text of the article should not duplicate it's title!"
+
+#: webapp/forms.py:42
+msgid "Найти"
+msgstr "Search"
+
+#: webapp/models.py:8
+msgid "Дата создания"
+msgstr ""
+
+#: webapp/models.py:9
+msgid "Дата изменения"
+msgstr ""
+
+#: webapp/models.py:18
+msgid "Контент"
+msgstr ""
+
+#: webapp/models.py:21 webapp/models.py:43
+msgid "Автор"
+msgstr ""
+
+#: webapp/models.py:31 webapp/models.py:40
+msgid "Статья"
+msgstr ""
+
+#: webapp/models.py:32
+msgid "Статьи"
+msgstr "Articles"
+
+#: webapp/models.py:41
+msgid "Комментарий"
+msgstr "Comments"
+
+#: webapp/models.py:57
+msgid "Тег"
+msgstr "Tag"
+
+#: webapp/models.py:58
+msgid "Теги"
+msgstr "Tags"
+
+#: webapp/templates/articles/delete_article.html:6
+msgid ""
+"\n"
+"            вы уверены что хотите удалить статью %(title)s\n"
+"        "
+msgstr ""
+"\n"
+"            delete %(title)s\n"
+"        "
+
+#: webapp/templates/articles/index.html:13
+msgid "Articles"
+msgstr "Articles"

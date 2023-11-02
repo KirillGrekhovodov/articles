@@ -1,7 +1,12 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block content %}
-    <h3>вы уверены что хотите удалить статью {{ article.title }}?</h3>
+    <h3>
+        {% blocktranslate with title=article.title %}
+            вы уверены что хотите удалить статью {{ title }}
+        {% endblocktranslate %}
+    </h3>
     <form action="" method="post">
         {% csrf_token %}
         <button>Да</button>

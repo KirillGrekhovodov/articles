@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block link %}
     {% if request.user.is_authenticated %}
@@ -9,7 +10,7 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Articles</h1>
+    <h1>{% translate "Articles" %}</h1>
     <br>
     {% include "partial/search_form.html" %}
     {% include "partial/articles_list.html" %}
